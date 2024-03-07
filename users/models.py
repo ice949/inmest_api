@@ -20,6 +20,7 @@ class IMUser(AbstractUser):
     user_type = models.CharField(max_length=20, choices=USER_TYPES, default='EIT')
     date_modified = models.DateTimeField(auto_now=True)
     date_created = models.DateTimeField(auto_now_add=True)
+    unique_code = models.CharField(max_length=4, blank=True)
     is_blocked = models.BooleanField(default=False)
     temporal_login_fail = models.IntegerField(default=0)
     permanent_login_fail = models.IntegerField(default=0)

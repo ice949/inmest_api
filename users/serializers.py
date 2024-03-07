@@ -7,6 +7,7 @@ class AuthSerializer(serializers.Serializer):
     last_name = serializers.CharField()
     phone_number = serializers.CharField()
     email = serializers.EmailField()
+    
 class UserSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     first_name = serializers.CharField()
