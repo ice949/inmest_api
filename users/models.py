@@ -26,7 +26,7 @@ class IMUser(AbstractUser):
     permanent_login_fail = models.IntegerField(default=0)
     
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return f"{self.first_name} {self.last_name} {self.email}"
     
 @receiver(post_save, sender=IMUser)
 def generate_auth_token(sender, instance=None, created=False, **kwargs):
