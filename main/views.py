@@ -7,6 +7,8 @@ from rest_framework.response import Response
 from main.models import *
 from main.serializers import *
 import datetime
+from rest_framework import viewsets, permissions
+from rest_framework.decorators import action
 
 
 # Create your views here.
@@ -31,11 +33,6 @@ def user_profile(request):
     }
     return JsonResponse(user_detail)
 
-# 1. write a view function called filter_queries
-# 1a. The view fuction should receive query_id through the url
-# 1b. Return a JsonResponse data with the following 
-# data: id, title, desicription, status, and submitted_by
-# 1c. the id should be the id received through the url
 
 def filter_queries(request, query_id):
     query = {
@@ -135,3 +132,31 @@ def create_class_schedule(request):
 
     serializer = ClassScheduleSerializer(class_schedule, many=False)
     return Response({"message": "Schedule successfully created", "data": serializer.data}, status.HTTP_201_CREATED)
+
+class QueryModelViewSet(viewsets.ModelViewSet):
+    @action(detail=False, methods=["post"])
+    def raise_query(self, request):
+        title = request.data.get("title")
+        description = request.data.get("description", None)
+        query_type = request.data.get("query_type")
+
+        if not title or not description:
+            return Response({"message": "My friend, send me title and description"}, status.HTTP_400_BAD_REQUEST)
+        
+        # if query_type == 'IT':
+        #     assignee = IMUser.objects.get(username="admin")
+        # else:
+        #     assignee = IMUser.objects.get(username="operations")
+        
+        query = Query.objects.create(
+            title=title,
+            description=description,
+            submitted_by=request.user,
+            query_type=query_type
+        )
+        query.save()
+
+        # Send email to assignee
+
+        serializer = QuerySerializer(query, many=False)
+        return Response({"message": "Query successfully raised", "data": serializer.data}, status.HTTP_201_CREATED)

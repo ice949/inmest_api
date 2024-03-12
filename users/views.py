@@ -111,18 +111,18 @@ class ResetPasswordApiView(APIView):
         
 class ChangePasswordApiView(APIView):
     def post(self, request, *args, **kwargs):
-        user = request.user
+        email = request.user.email
         old_password = request.data.get("old_password")
         new_password = request.data.get("new_password")
 
         if not old_password or not new_password:
             return generate_400_response("Please provide old password and new password")
         
-        if not user.check_password(old_password):
-            return generate_400_response("Old password is incorrect")
-        
-        user.set_password(new_password)
-        user.save()
+        authenticate_user = authenticate(username=email, password=old_password)
+        if not authenticate_user:
+            return generate_400_response("Invalid old password")
+        authenticate_user.set_password(new_password)
+        authenticate_user.save()
         return Response({"detail": "Password successfully changed"}, status.HTTP_200_OK)
         
 

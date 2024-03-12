@@ -27,3 +27,10 @@ class ClassScheduleSerializer(serializers.Serializer):
     course = CourseSerializer(many=False)
     cohort = CohortSerializer(many=False)
     date_created = serializers.DateTimeField()
+
+class QuerySerializer(serializers.Serializer):
+    cohort_id = serializers.IntegerField()
+    course_id = serializers.IntegerField()
+    facilitator_id = serializers.IntegerField()
+    start_date = serializers.DateTimeField()
+    end_date = serializers.DateTimeField()
